@@ -3,12 +3,12 @@
 //!
 //! THIS FILE WAS AUTO-GENERATED USING THE SUBSTRATE BENCHMARK CLI VERSION 3.0.0
 //! DATE: 2021-05-31, STEPS: `[50, ]`, REPEAT: 20, LOW RANGE: `[]`, HIGH RANGE: `[]`
-//! EXECUTION: Some(Wasm), WASM-EXECUTION: Compiled, CHAIN: Some("statemint-dev"), DB CACHE: 128
+//! EXECUTION: Some(Wasm), WASM-EXECUTION: Compiled, CHAIN: Some("statemine-dev"), DB CACHE: 128
 
 // Executed Command:
 // ./target/release/statemint
 // benchmark
-// --chain=statemint-dev
+// --chain=statemine-dev
 // --execution=wasm
 // --wasm-execution=compiled
 // --pallet=pallet_utility
@@ -16,7 +16,7 @@
 // --steps=50
 // --repeat=20
 // --raw
-// --output=./runtime/statemint/src/weights/
+// --output=./runtime/statemine/src/weights/
 
 
 #![allow(unused_parens)]
@@ -29,16 +29,16 @@ use sp_std::marker::PhantomData;
 pub struct WeightInfo<T>(PhantomData<T>);
 impl<T: frame_system::Config> pallet_utility::WeightInfo for WeightInfo<T> {
 	fn batch(c: u32, ) -> Weight {
-		(15_408_000 as Weight)
+		(16_177_000 as Weight)
 			// Standard Error: 0
-			.saturating_add((4_571_000 as Weight).saturating_mul(c as Weight))
+			.saturating_add((4_582_000 as Weight).saturating_mul(c as Weight))
 	}
 	fn as_derivative() -> Weight {
-		(7_817_000 as Weight)
+		(7_848_000 as Weight)
 	}
 	fn batch_all(c: u32, ) -> Weight {
-		(16_520_000 as Weight)
+		(17_745_000 as Weight)
 			// Standard Error: 0
-			.saturating_add((4_571_000 as Weight).saturating_mul(c as Weight))
+			.saturating_add((4_578_000 as Weight).saturating_mul(c as Weight))
 	}
 }

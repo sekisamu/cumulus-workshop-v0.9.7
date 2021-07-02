@@ -201,6 +201,7 @@ use statemint_common::Balance as StatemintBalance;
 pub type StatemintChainSpec = sc_service::GenericChainSpec<statemint_runtime::GenesisConfig, Extensions>;
 pub type StatemineChainSpec = sc_service::GenericChainSpec<statemine_runtime::GenesisConfig, Extensions>;
 pub type WestmintChainSpec = sc_service::GenericChainSpec<westmint_runtime::GenesisConfig, Extensions>;
+pub type XTransferChainSpec = sc_service::GenericChainSpec<xtransfer_runtime::GenesisConfig, Extensions>;
 
 const STATEMINT_ED: StatemintBalance = statemint_runtime::constants::currency::EXISTENTIAL_DEPOSIT;
 const STATEMINE_ED: StatemintBalance = statemine_runtime::constants::currency::EXISTENTIAL_DEPOSIT;
@@ -226,6 +227,11 @@ pub fn get_collator_keys_from_seed(seed: &str) -> AuraId {
 pub fn statemint_session_keys(keys: AuraId) -> statemint_runtime::opaque::SessionKeys {
 	statemint_runtime::opaque::SessionKeys { aura: keys }
 }
+
+pub fn xtransfer_session_keys(keys: AuraId) -> xtransfer_runtime::opaque::SessionKeys {
+	xtransfer_runtime::opaque::SessionKeys { aura: keys }
+}
+
 
 /// Generate the session keys from individual elements.
 ///
@@ -371,6 +377,98 @@ fn statemint_genesis(
 		parachain_system: Default::default(),
 	}
 }
+
+pub fn xtransfer_local_config(id: ParaId) -> XTransferChainSpec {
+	let mut properties = sc_chain_spec::Properties::new();
+	properties.insert("tokenSymbol".into(), "DOT".into());
+	properties.insert("tokenDecimals".into(), 10.into());
+
+	XTransferChainSpec::from_genesis(
+		// Name
+		"xtransfer Local",
+		// ID
+		"xtransfer_local",
+		ChainType::Local,
+		move || {
+			xtransfer_genesis(
+				// initial collators.
+				vec![(
+						 get_account_id_from_seed::<sr25519::Public>("Alice"),
+						 get_collator_keys_from_seed("Alice")
+					 ),
+					 (
+						 get_account_id_from_seed::<sr25519::Public>("Bob"),
+						 get_collator_keys_from_seed("Bob")
+					 ),
+				],
+				vec![
+					get_account_id_from_seed::<sr25519::Public>("Alice"),
+					get_account_id_from_seed::<sr25519::Public>("Bob"),
+					get_account_id_from_seed::<sr25519::Public>("Charlie"),
+					get_account_id_from_seed::<sr25519::Public>("Dave"),
+					get_account_id_from_seed::<sr25519::Public>("Eve"),
+					get_account_id_from_seed::<sr25519::Public>("Ferdie"),
+					get_account_id_from_seed::<sr25519::Public>("Alice//stash"),
+					get_account_id_from_seed::<sr25519::Public>("Bob//stash"),
+					get_account_id_from_seed::<sr25519::Public>("Charlie//stash"),
+					get_account_id_from_seed::<sr25519::Public>("Dave//stash"),
+					get_account_id_from_seed::<sr25519::Public>("Eve//stash"),
+					get_account_id_from_seed::<sr25519::Public>("Ferdie//stash"),
+				],
+				id,
+			)
+		},
+		vec![],
+		None,
+		None,
+		Some(properties),
+		Extensions {
+			relay_chain: "polkadot-local".into(),
+			para_id: id.into(),
+		},
+	)
+}
+
+fn xtransfer_genesis(
+	invulnerables: Vec<(AccountId, AuraId)>,
+	endowed_accounts: Vec<AccountId>,
+	id: ParaId,
+) -> xtransfer_runtime::GenesisConfig {
+	xtransfer_runtime::GenesisConfig {
+		system: xtransfer_runtime::SystemConfig {
+			code: xtransfer_runtime::WASM_BINARY
+				.expect("WASM binary was not build, please build it!")
+				.to_vec(),
+			changes_trie_config: Default::default(),
+		},
+		balances: xtransfer_runtime::BalancesConfig {
+			balances: endowed_accounts
+				.iter()
+				.cloned()
+				.map(|k| (k, STATEMINT_ED * 4096))
+				.collect(),
+		},
+		parachain_info: xtransfer_runtime::ParachainInfoConfig { parachain_id: id },
+		collator_selection: xtransfer_runtime::CollatorSelectionConfig {
+			invulnerables: invulnerables.iter().cloned().map(|(acc, _)| acc).collect(),
+			candidacy_bond: STATEMINT_ED * 16,
+			..Default::default()
+		},
+		session: xtransfer_runtime::SessionConfig {
+			keys: invulnerables.iter().cloned().map(|(acc, aura)| (
+				acc.clone(), // account id
+				acc.clone(), // validator id
+				xtransfer_session_keys(aura), // session keys
+			)).collect()
+		},
+		// no need to pass anything to aura, in fact it will panic if we do. Session will take care
+		// of this.
+		aura: Default::default(),
+		aura_ext: Default::default(),
+		parachain_system: Default::default(),
+	}
+}
+
 
 pub fn statemine_development_config(id: ParaId) -> StatemineChainSpec {
 	let mut properties = sc_chain_spec::Properties::new();

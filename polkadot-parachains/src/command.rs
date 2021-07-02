@@ -96,6 +96,7 @@ fn load_spec(
 		"statemint-local" => Box::new(chain_spec::statemint_local_config(para_id)),
 		"statemine-dev" => Box::new(chain_spec::statemine_development_config(para_id)),
 		"statemine-local" => Box::new(chain_spec::statemine_local_config(para_id)),
+		"xtransfer-local" => Box::new(chain_spec::xtransfer_local_config(para_id)),
 		// the chain spec as used for generating the upgrade genesis values
 		"statemine-genesis" => Box::new(chain_spec::statemine_config(para_id)),
 		// the shell-based chain spec as used for syncing

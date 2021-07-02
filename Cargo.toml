@@ -28,6 +28,7 @@ members = [
 	"polkadot-parachains/statemint-runtime",
 	"polkadot-parachains/statemine-runtime",
 	"polkadot-parachains/westmint-runtime",
+	"polkadot-parachains/xtransfer-runtime",
 	"test/runtime",
 	"test/runtime-upgrade",
 	"test/client",

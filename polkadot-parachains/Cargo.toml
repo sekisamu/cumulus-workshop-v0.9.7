@@ -29,6 +29,7 @@ statemint-runtime = { path = "statemint-runtime" }
 statemine-runtime = { path = "statemine-runtime" }
 westmint-runtime = { path = "westmint-runtime" }
 statemint-common = { path = "statemint-common" }
+xtransfer-runtime = { path = "xtransfer-runtime"}
 
 # Substrate dependencies
 frame-benchmarking = { git = 'https://github.com/paritytech/substrate', branch = "polkadot-v0.9.7" }
